@@ -6,7 +6,7 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'login',
@@ -14,7 +14,10 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent),
+    loadComponent: () =>
+      import('./components/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
   },
   {
     path: '',
@@ -22,8 +25,11 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
-        loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent),
-      }
-    ]
-  }
+        loadComponent: () =>
+          import('./components/home/home.component').then(
+            (m) => m.HomeComponent
+          ),
+      },
+    ],
+  },
 ];

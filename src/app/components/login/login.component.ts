@@ -5,10 +5,9 @@ import { Router } from '@angular/router';
   selector: 'app-login',
   imports: [],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-
   constructor(private router: Router) {}
 
   onLogin() {
@@ -20,8 +19,7 @@ export class LoginComponent {
   }
 
   onAutoCompletar() {
-    console.log("Login presionado");
-    console.log("hola")
+    console.log('Login presionado');
+    console.log('hola');
   }
-
 }
