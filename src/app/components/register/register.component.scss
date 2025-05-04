@@ -9,18 +9,6 @@
   font-weight: bold;
 }
 
-.register-input {
-  width: 300px;
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.register-input:focus {
-  border-color: #cc34c4;
-  outline: none;
-}
-
 .custom-field {
   display: flex;
   align-items: center;
@@ -277,4 +265,47 @@
 .button3:hover {
   background-color: red;
   color: white;
+}
+
+.register-input {
+  width: 300px;
+  padding: 12px 20px;
+  margin: 10px 0;
+  border: 2px solid #333;
+  border-radius: 6px;
+  background-color: #222;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.register-input:hover {
+  border-color: #cc34c4;
+  background-color: #2c2c2c;
+}
+
+.register-input:focus {
+  border-color: #cc34c4;
+  background-color: #2c2c2c;
+  outline: none;
+}
+
+.register-input::-webkit-file-upload-button {
+  background-color: #444;
+  color: #fff;
+  padding: 8px 15px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.register-input::-webkit-file-upload-button:hover {
+  background-color: #cc34c4;
+}
+
+.register-input::-webkit-file-upload-button:active {
+  background-color: #9e278e;
 }
