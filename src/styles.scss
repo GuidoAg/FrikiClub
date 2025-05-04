@@ -1,9 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'bootstrap/scss/bootstrap' as *;
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+app-root {
+  display: block;
+  height: 100%;
+}
+
 
 @font-face {
-    font-family: blueScreen;
-    src: url(assets/fonts/Blue\ Screen\ Personal\ Use.ttf) format('truetype');
+  font-family: blueScreen;
+  src: url(assets/fonts/Blue\ Screen\ Personal\ Use.ttf) format("truetype");
 }
+
+@font-face {
+  font-family: Computerfont;
+  src: url(assets/fonts/Computerfont.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: SuperDream;
+  src: url(assets/fonts/Super\ Dream.ttf) format("truetype");
+}
+
+
+
+

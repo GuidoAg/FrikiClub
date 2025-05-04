@@ -1,0 +1,56 @@
+<main class="chat-fondo">
+  <div class="chat-container">
+    <h1 class="chat-titulo">CHAT GLOBAL</h1>
+
+    <div class="chat-card">
+      <div class="chat-mensajes" #chatContainer>
+        <div class="chat-mensajes-contenedor">
+          @for (msg of this.chats(); track msg.id) {
+          <div class="mensaje-item">
+            <div class="mensaje-avatar">
+              @if (msg?.Usuarios?.avatarUrl) {
+              <img
+                [src]="getAvatarUrl(msg.Usuarios?.avatarUrl)"
+                class="avatar-img"
+                alt="Avatar"
+              />
+              } @else {
+              <div class="avatar-placeholder">?</div>
+              }
+
+              <div class="mensaje-hora">
+                {{ msg?.created_at | date : "M/d/yy, h:mm a" }}
+              </div>
+            </div>
+
+            <div class="mensaje-cuerpo">
+              <div class="mensaje-nombre">
+                {{ msg?.Usuarios?.nombre || "Usuario desconocido" }}
+              </div>
+              <div class="mensaje-texto">{{ msg?.text }}</div>
+            </div>
+          </div>
+          } @empty {
+          <div class="mensaje-vacio">No hay mensajes aún.</div>
+          }
+        </div>
+      </div>
+
+      <form [formGroup]="chatForm" (ngSubmit)="onSubmit()">
+        <div class="chat-input-contenedor">
+          <div class="input-group">
+            <input
+              formControlName="chat_message"
+              type="text"
+              class="chat-input"
+              placeholder="Escribí tu mensaje..."
+            />
+            <button [disabled]="!chatForm.valid" class="chat-boton-enviar">
+              Enviar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

@@ -1,19 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'friki-club-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-  ],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

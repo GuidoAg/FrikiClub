@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
   <body>
-    <div class="container">
+    <div class="mi-container">
       <div class="left">
         <div class="texto-izquierda">
-          <h1>FrikiClub.ARG</h1>
+          <p>FrikiClub.ARG</p>
         </div>
         <div class="miform">
           <form class="form">
             <p id="heading">Sign Up</p>
+            <p
+              class="texto-error"
+              [style.visibility]="isErrorVisible ? 'visible' : 'hidden'"
+            >
+              {{ errorMessage }}
+            </p>
             <div class="field">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -26,6 +32,8 @@
                 />
               </svg>
               <input
+                [(ngModel)]="name"
+                name="name"
                 autocomplete="off"
                 placeholder="Username"
                 class="input-field"
@@ -46,6 +54,8 @@
                 ></path>
               </svg>
               <input
+                [(ngModel)]="eMail"
+                name="eMail"
                 autocomplete="off"
                 placeholder="eMail"
                 class="input-field"
@@ -66,6 +76,8 @@
                 ></path>
               </svg>
               <input
+                [(ngModel)]="password"
+                name="password"
                 placeholder="Password"
                 class="input-field"
                 type="password"
@@ -85,6 +97,8 @@
                 ></path>
               </svg>
               <input
+                [(ngModel)]="rePassword"
+                name="rePassword"
                 placeholder="Re enter Password"
                 class="input-field"
                 type="password"
@@ -113,6 +127,7 @@
                   [(ngModel)]="selectedDate"
                   name="fecha"
                   placeholder="Fecha nacimiento"
+                  (dateChange)="calculateAgeFromDate()"
                 />
                 <mat-datepicker-toggle
                   class="mi-calendario"
@@ -129,7 +144,7 @@
               />
             </div>
             <div class="btn">
-              <button type="button" class="button1" (click)="onRegister()">
+              <button type="button" class="button1" (click)="register()">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Register&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               </button>
               <button type="button" class="button2" (click)="onBackToLogin()">
@@ -141,7 +156,7 @@
       </div>
       <div class="right">
         <div class="texto-derecha">
-          <h1>极客俱乐部</h1>
+          <p>极客俱乐部</p>
         </div>
       </div>
     </div>

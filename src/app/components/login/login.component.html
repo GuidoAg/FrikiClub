@@ -1,14 +1,21 @@
-<!DOCTYPE html>
 <html lang="es">
   <body>
-    <div class="container">
+    <div class="mi-container">
       <div class="left">
         <div class="texto-izquierda">
-          <h1>FrikiClub.ARG</h1>
+          <p>FrikiClub.ARG</p>
         </div>
         <div class="miform">
           <form class="form">
             <p id="heading">Login</p>
+            <p
+              #errorElement
+              id="error"
+              class="texto-error"
+              [style.visibility]="isErrorVisible ? 'visible' : 'hidden'"
+            >
+              Usuario o contraseña incorrecto
+            </p>
             <div class="field">
               <svg
                 class="input-icon"
@@ -23,6 +30,8 @@
                 ></path>
               </svg>
               <input
+                [(ngModel)]="eMail"
+                name="eMail"
                 autocomplete="off"
                 placeholder="eMail"
                 class="input-field"
@@ -43,6 +52,8 @@
                 ></path>
               </svg>
               <input
+                [(ngModel)]="password"
+                name="password"
                 placeholder="Password"
                 class="input-field"
                 type="password"
@@ -64,7 +75,7 @@
       </div>
       <div class="right">
         <div class="texto-derecha">
-          <h1>极客俱乐部</h1>
+          <p>极客俱乐部</p>
         </div>
         S
       </div>

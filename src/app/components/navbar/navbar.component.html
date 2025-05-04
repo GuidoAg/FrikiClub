@@ -1,0 +1,29 @@
+<nav class="fondo">
+  <div>
+    <button class="btn" (click)="navigate('home')">HOME</button>
+    <button class="btn" (click)="navigate('chat')">CHAT</button>
+    <button class="btn" (click)="navigate('quien-soy')">QUIEN SOY</button>
+  </div>
+
+  @if (userData$ | async; as user) {
+  <div class="user-info">
+    <div class="profile-wrapper" #dropdownRef>
+      <button
+        class="profile-container"
+        (click)="toggleDropdown()"
+        (keydown.enter)="toggleDropdown()"
+      >
+        <img
+          [src]="getAvatarUrl(user.avatarUrl)"
+          alt="Foto de perfil"
+          class="profile-pic"
+        />
+      </button>
+      <div class="dropdown" *ngIf="dropdownOpen">
+        <p class="nombre-usuario">{{ user.nombre }}</p>
+        <button class="btn2" (click)="logout()">CERRAR SESION</button>
+      </div>
+    </div>
+  </div>
+  }
+</nav>

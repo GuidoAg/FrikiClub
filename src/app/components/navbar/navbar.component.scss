@@ -1,0 +1,140 @@
+.profile-container {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.profile-pic {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-container:hover .profile-pic,
+.profile-container:focus .profile-pic {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.nombre-usuario {
+  color: #fff;
+  font-size: large;
+  font-weight: 300;
+  text-transform: capitalize;
+  margin-left: 3px;
+}
+
+.profile-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: rgb(0, 0, 0);
+  border: 1px solid #ccc;
+  padding: 1rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+}
+
+.btn {
+  --bg: #805e79;
+  --hover-bg: #ff90e8;
+  --hover-text: #000;
+  color: #fff;
+  cursor: pointer;
+  border: 1px solid var(--bg);
+  border-radius: 4px;
+  padding: 0.4em 1.5em;
+  background: var(--bg);
+  transition: 0.2s;
+  margin-left: 10px;
+  font-size: large;
+  font-weight: 200;
+  font-family: SuperDream;
+}
+
+.btn:hover {
+  color: var(--hover-text);
+  transform: translate(-0.25rem, -0.25rem);
+  background: var(--hover-bg);
+  box-shadow: 0.25rem 0.25rem var(--bg);
+}
+
+.btn:active {
+  transform: translate(0);
+  box-shadow: none;
+}
+
+.btn2 {
+  --bg: #805e79;
+  --hover-bg: #ed5454;
+  --hover-text: #000;
+  color: #fff;
+  cursor: pointer;
+  border: 1px solid var(--bg);
+  border-radius: 4px;
+  padding: 0.4em 1em;
+  background: var(--bg);
+  transition: 0.2s;
+  font-size: large;
+  font-weight: 200;
+  font-family: SuperDream;
+}
+
+.btn2:hover {
+  color: var(--hover-text);
+  transform: translate(-0.25rem, -0.25rem);
+  background: var(--hover-bg);
+  box-shadow: 0.25rem 0.25rem var(--bg);
+}
+
+.btn2:active {
+  transform: translate(0);
+  box-shadow: none;
+}
+
+.fondo {
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+
+  background: #121212;
+  background: linear-gradient(
+    135deg,
+    #000000 25%,
+    #101010 25%,
+    #101010 50%,
+    #000000 50%,
+    #000000 75%,
+    #101010 75%,
+    #101010
+  );
+  background-size: 40px 40px;
+}
+
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 40px;
+  }
+}

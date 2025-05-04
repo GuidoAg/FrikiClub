@@ -1,30 +1,20 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
-  selector: 'app-home',
-  providers: [provideNativeDateAdapter()],
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-  ],
-  //changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'friki-club-home',
+  standalone: true,
+  imports: [FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
-  selectedDate: Date | null = null;
+  constructor(private router: Router, private userService: UserService) {}
 
-  // Puedes usar esta función para imprimir la fecha
-  mostrarFecha() {
-    console.log(this.selectedDate);
+  async logout() {
+    await this.userService.logout();
+    this.router.navigate(['/login']);
   }
 }
