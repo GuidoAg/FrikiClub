@@ -11,7 +11,13 @@ export class UserService {
   userData$ = this.userDataSubject.asObservable();
 
   constructor() {
-    this.loadUserData();
+    supabase.auth.getUser().then((authData) => {
+      if (authData.data?.user) {
+        this.loadUserData();
+      } else {
+        this.userDataSubject.next(null);
+      }
+    });
   }
 
   tempUserData: { name: string; age: number; avatarFile: File } | null = null;
@@ -53,70 +59,90 @@ export class UserService {
 
   private loadPromise: Promise<void> | null = null;
 
-  loadUserData(): Promise<void> {
+  async loadUserData(): Promise<void> {
     this.loadPromise = (async () => {
-      const { data: authData, error: authError } = await supabase.auth.getUser();
-  
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
+
       if (authError || !authData.user) {
         this.userDataSubject.next(null);
         return;
       }
-  
+
       const userId = authData.user.id;
-  
-      // eslint-disable-next-line prefer-const
-      let { data: userRecord, error } = await supabase
-        .from('Usuarios')
-        .select('*')
-        .eq('authId', userId)
-        .single();
-  
-      if (error && error.code === 'PGRST116') {
-        if (this.tempUserData) {
-          const uniqueFilename = `${userId}_${Date.now()}_${this.tempUserData.avatarFile.name}`;
-          const avatarPath = `avatarUsuarios/${uniqueFilename}`;
-  
-          const { error: uploadError } = await supabase.storage
-            .from('imagenes')
-            .upload(avatarPath, this.tempUserData.avatarFile, {
-              cacheControl: '3600',
-              upsert: false,
-            });
-  
-          if (uploadError) {
-            console.error('Error al subir avatar:', uploadError.message);
-            return;
+
+      try {
+        const { data: userRecords, error } = await supabase
+          .from('Usuarios')
+          .select('*')
+          .eq('authId', userId)
+          .single();
+
+        if (error || !userRecords) {
+          console.log('Usuario no encontrado en la tabla. Insertando datos...');
+
+          if (this.tempUserData) {
+            const { avatarFile, name, age } = this.tempUserData;
+
+            let avatarPath = '';
+            if (avatarFile) {
+              const uniqueFilename = `${userId}_${Date.now()}_${
+                avatarFile.name
+              }`;
+              avatarPath = `avatarUsuarios/${uniqueFilename}`;
+
+              const { error: uploadError } = await supabase.storage
+                .from('imagenes')
+                .upload(avatarPath, avatarFile, {
+                  cacheControl: '3600',
+                  upsert: false,
+                });
+
+              if (uploadError) {
+                console.error('Error al subir avatar:', uploadError.message);
+                this.userDataSubject.next(null);
+                return;
+              }
+            }
+
+            const { data: newUser, error: insertError } = await supabase
+              .from('Usuarios')
+              .insert([
+                {
+                  authId: userId,
+                  nombre: name || authData.user.email,
+                  edad: age || 0,
+                  avatarUrl: avatarPath,
+                },
+              ])
+              .select()
+              .single();
+
+            if (insertError) {
+              console.error(
+                'Error al insertar datos del usuario:',
+                insertError.message
+              );
+              this.userDataSubject.next(null);
+              return;
+            }
+
+            this.userDataSubject.next(newUser);
+          } else {
+            console.error('No hay datos temporales del usuario para insertar.');
+            this.userDataSubject.next(null);
           }
-  
-          const { error: insertError, data: newUser } = await supabase
-            .from('Usuarios')
-            .insert([
-              {
-                authId: userId,
-                nombre: this.tempUserData.name,
-                edad: this.tempUserData.age,
-                avatarUrl: avatarPath,
-              },
-            ])
-            .select()
-            .single();
-  
-          if (insertError) {
-            console.error('Error al guardar el usuario:', insertError.message);
-            return;
-          }
-  
-          userRecord = newUser;
-          this.tempUserData = null;
+        } else {
+          this.userDataSubject.next(userRecords);
         }
+      } catch (err) {
+        console.error('Error al cargar los datos del usuario:', err);
+        this.userDataSubject.next(null);
       }
-  
-      this.userDataSubject.next(userRecord || null);
     })();
-  
+
     return this.loadPromise;
   }
-  
 
   async logout() {
     await supabase.auth.signOut();
