@@ -75,7 +75,7 @@ export class ChatComponent {
       .chatMessage(formValue, currentUser.id)
       .then(() => {
         this.chatForm.reset();
-        this.onListChat();
+        //this.onListChat();
       })
       .catch((err) => {
         alert(err.message);
