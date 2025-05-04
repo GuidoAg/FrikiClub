@@ -55,38 +55,39 @@ export class UserService {
 
   loadUserData(): Promise<void> {
     this.loadPromise = (async () => {
-      const { data: authData, error: authError } =
-        await supabase.auth.getUser();
-
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+  
       if (authError || !authData.user) {
         this.userDataSubject.next(null);
         return;
       }
-
+  
       const userId = authData.user.id;
-
+  
       // eslint-disable-next-line prefer-const
       let { data: userRecord, error } = await supabase
         .from('Usuarios')
         .select('*')
         .eq('authId', userId)
         .single();
-
+  
       if (error && error.code === 'PGRST116') {
         if (this.tempUserData) {
-          const avatarPath = `avatarUsuarios/${this.tempUserData.avatarFile.name}`;
+          const uniqueFilename = `${userId}_${Date.now()}_${this.tempUserData.avatarFile.name}`;
+          const avatarPath = `avatarUsuarios/${uniqueFilename}`;
+  
           const { error: uploadError } = await supabase.storage
             .from('imagenes')
             .upload(avatarPath, this.tempUserData.avatarFile, {
               cacheControl: '3600',
               upsert: false,
             });
-
+  
           if (uploadError) {
             console.error('Error al subir avatar:', uploadError.message);
             return;
           }
-
+  
           const { error: insertError, data: newUser } = await supabase
             .from('Usuarios')
             .insert([
@@ -99,22 +100,23 @@ export class UserService {
             ])
             .select()
             .single();
-
+  
           if (insertError) {
             console.error('Error al guardar el usuario:', insertError.message);
             return;
           }
-
+  
           userRecord = newUser;
           this.tempUserData = null;
         }
       }
-
+  
       this.userDataSubject.next(userRecord || null);
     })();
-
+  
     return this.loadPromise;
   }
+  
 
   async logout() {
     await supabase.auth.signOut();
