@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
     this.estadoJuego.salirJuego$.subscribe((salir) => {
       if (salir) {
         this.salirJuego();
-        this.estadoJuego.resetearSalida(); // <- opcional: para que no vuelva a activarse automáticamente
+        this.estadoJuego.resetearSalida(); 
       }
     });
   }
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
   }
 
   seleccionarJuego() {
-    this.juegoSeleccionado = !this.juegoSeleccionado; // Cambia de false a true
+    this.juegoSeleccionado = true;
   }
 
   salirJuego() {

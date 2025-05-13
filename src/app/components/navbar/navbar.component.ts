@@ -1,4 +1,10 @@
-import { Component, inject, ViewChild, ElementRef, HostListener } from '@angular/core';
+import {
+  Component,
+  inject,
+  ViewChild,
+  ElementRef,
+  HostListener,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
@@ -33,7 +39,9 @@ export class NavbarComponent {
   constructor(private estadoJuego: EstadoJuegoService) {}
 
   navigate(path: string) {
-    this.estadoJuego.solicitarSalidaJuego();
+    if (path == 'home') {
+      this.estadoJuego.solicitarSalidaJuego();
+    }
     this.router.navigate([path]);
   }
 

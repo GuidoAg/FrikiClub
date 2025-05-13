@@ -1,0 +1,31 @@
+.wrapper {
+  max-width: 600px;
+  margin: 3rem auto;
+}
+
+.imagen-container {
+  max-height: 200px;
+  img {
+    max-height: 200px;
+    object-fit: contain;
+  }
+}
+
+.palabra .letra {
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 40px;
+  height: 50px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
+  border: 2px solid #343a40;
+  border-radius: 8px;
+}
+
+.teclado button {
+  width: 40px;
+  height: 40px;
+  font-weight: bold;
+}

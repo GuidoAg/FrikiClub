@@ -50,6 +50,13 @@ export const routes: Routes = [
                 (m) => m.BuscaMinasComponent
               ),
           },
+          {
+            path: 'ahorcado',
+            loadComponent: () =>
+              import('./components/ahorcado/ahorcado.component').then(
+                (m) => m.AhorcadoComponent
+              ),
+          },
         ],
       },
       {
