@@ -42,6 +42,15 @@ export const routes: Routes = [
             (m) => m.HomeComponent
           ),
         canActivate: [authGuard],
+        children: [
+          {
+            path: 'busca-minas',
+            loadComponent: () =>
+              import('./components/busca-minas/busca-minas.component').then(
+                (m) => m.BuscaMinasComponent
+              ),
+          },
+        ],
       },
       {
         path: 'chat',

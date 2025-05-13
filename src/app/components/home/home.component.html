@@ -1,4 +1,5 @@
 <main class="fondo">
+  <div *ngIf="!juegoSeleccionado">
   <h1 class="titulo-juegos">Juegos</h1>
   <div class="card-container">
     <div class="card">
@@ -97,7 +98,7 @@
         </div>
       </div>
     </div>
-    <div class="card">
+    <a [routerLink]="['/home/busca-minas']" class="card" tabindex="0" (click)="seleccionarJuego()">
       <div class="content">
         <div class="back">
           <div class="back-content">
@@ -124,10 +125,14 @@
                 ></path>
               </g>
             </svg>
-            <strong>Adivina Color</strong>
+            <strong>Busca Minas</strong>
           </div>
         </div>
       </div>
-    </div>
+    </a>
+  </div>
+  </div>
+  <div *ngIf="juegoSeleccionado"> 
+    <router-outlet></router-outlet>
   </div>
 </main>

@@ -1,0 +1,32 @@
+<div class="wrapper bg-white p-4 rounded shadow-lg">
+  <div class="top-bar d-flex justify-content-between align-items-center mb-3">
+    <div><strong>💣</strong> {{ minasRestantes() }} minas</div>
+    <div><strong>⏱️</strong> {{ tiempo() }}s</div>
+    <button class="btn btn-sm btn-outline-primary" (click)="iniciarJuego()">🔄 Reiniciar</button>
+  </div>
+
+  <div class="board">
+    <div *ngFor="let fila of tablero(); let i = index" class="row d-flex justify-content-center">
+      <div
+        *ngFor="let celda of fila; let j = index"
+        class="cell"
+        [class.revealed]="celda.revelada"
+        [class.flagged]="celda.marcada"
+        tabindex="0"
+        role="button"
+        (click)="descubrir(i, j)"
+        (contextmenu)="alternarBandera($event, i, j)"
+        (keydown)="manejarTecla($event, i, j)"
+      >
+        <span *ngIf="celda.revelada">
+          {{ celda.mina ? "💣" : celda.valor > 0 ? celda.valor : "" }}
+        </span>
+        <span *ngIf="!celda.revelada && celda.marcada">🚩</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="mensajeFinal()" class="alert alert-info mt-3">
+    {{ mensajeFinal() }}
+  </div>
+</div>

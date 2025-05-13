@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
-import { ElementRef, HostListener, ViewChild } from '@angular/core';
+import { EstadoJuegoService } from '../../services/estado-juego.service';
 
 @Component({
   selector: 'friki-club-navbar',
@@ -30,7 +30,10 @@ export class NavbarComponent {
     }
   }
 
+  constructor(private estadoJuego: EstadoJuegoService) {}
+
   navigate(path: string) {
+    this.estadoJuego.solicitarSalidaJuego();
     this.router.navigate([path]);
   }
 
