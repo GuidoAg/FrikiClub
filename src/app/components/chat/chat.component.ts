@@ -28,6 +28,8 @@ export class ChatComponent {
   private auth = inject(UserService);
   private chat_service = inject(ChatService);
   private fb = inject(FormBuilder);
+  private messageTimestamps: number[] = [];
+  private MAX_MESSAGES_PER_MINUTE = 5;
   chats = signal<Ichat[]>([]);
 
   @ViewChild('chatContainer') chatContainer!: ElementRef;
@@ -35,9 +37,10 @@ export class ChatComponent {
   chatForm!: FormGroup;
 
   constructor(private chatService: ChatService) {
-    this.chatForm = this.fb.group({
-      chat_message: ['', Validators.required],
-    });
+this.chatForm = this.fb.group({
+  chat_message: ['', [Validators.required, Validators.maxLength(300)]], 
+});
+
 
     this.onListChat();
 
@@ -46,6 +49,42 @@ export class ChatComponent {
       this.chats.set(chatList);
       setTimeout(() => this.scrollToBottom(), 100);
     });
+  }
+
+  onSubmit() {
+    const formValue = this.chatForm.value.chat_message?.trim();
+    const currentUser = this.auth.getCurrentUser();
+
+    if (!currentUser || !currentUser.id) {
+      alert('Usuario no identificado');
+      return;
+    }
+
+    if (!formValue) {
+      return;
+    }
+    const now = Date.now();
+    this.messageTimestamps = this.messageTimestamps.filter(
+      (timestamp) => now - timestamp < 60000 
+    );
+
+    if (this.messageTimestamps.length >= this.MAX_MESSAGES_PER_MINUTE) {
+      alert(
+        'Has enviado demasiados mensajes en poco tiempo. Espera unos segundos.'
+      );
+      return;
+    }
+
+    this.messageTimestamps.push(now);
+
+    this.chat_service
+      .chatMessage(formValue, currentUser.id)
+      .then(() => {
+        this.chatForm.reset();
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   }
 
   scrollToBottom(): void {
@@ -60,26 +99,6 @@ export class ChatComponent {
   getAvatarUrl(path?: string | null): string {
     if (!path) return 'ruta/al/avatar/default.png';
     return this.auth.getAvatarUrl(path);
-  }
-
-  onSubmit() {
-    const formValue = this.chatForm.value.chat_message;
-    const currentUser = this.auth.getCurrentUser();
-
-    if (!currentUser || !currentUser.id) {
-      alert('Usuario no identificado');
-      return;
-    }
-
-    this.chat_service
-      .chatMessage(formValue, currentUser.id)
-      .then(() => {
-        this.chatForm.reset();
-        //this.onListChat();
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
   }
 
   onListChat() {

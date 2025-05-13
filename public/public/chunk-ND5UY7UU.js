@@ -1,0 +1,1 @@
+import{P as a,g as t}from"./chunk-PAM5HGPU.js";var r=class e{salirJuegoSubject=new t(!1);salirJuego$=this.salirJuegoSubject.asObservable();solicitarSalidaJuego(){this.salirJuegoSubject.next(!0)}resetearSalida(){this.salirJuegoSubject.next(!1)}static \u0275fac=function(o){return new(o||e)};static \u0275prov=a({token:e,factory:e.\u0275fac,providedIn:"root"})};export{r as a};
