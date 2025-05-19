@@ -23,54 +23,70 @@ export class AhorcadoComponent {
   temporizadorId: ReturnType<typeof setInterval> | null = null;
 
   abecedario = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('');
-  diccionario: string[] = [];
 
-  audioWin = new Audio('assets/sounds/win.mp3');
+  imagenesPreCargadas: HTMLImageElement[] = [];
+
+  audios: Record<string, HTMLAudioElement> = {};
+
+  diccionarios: Record<string, string[]> = {};
 
   constructor(private http: HttpClient) {
     this.preloadImagenes();
-    this.iniciarJuego();
+    this.preloadAudios();
+    this.iniciarTemporizador();
+
+    this.preloadDiccionarios().then(() => {
+      this.iniciarJuego();
+    });
   }
 
   preloadImagenes() {
     for (let i = 0; i <= 6; i++) {
       const img = new Image();
       img.src = `assets/imagenes/${i}.png`;
+      this.imagenesPreCargadas.push(img);
     }
   }
 
-  reproducirSonido(ruta: string) {
-    if (ruta === 'assets/sounds/win.mp3') {
-      this.audioWin.currentTime = 0;
-      this.audioWin.play();
+  preloadAudios() {
+    const sonidos = ['win', 'punto'];
+    sonidos.forEach((nombre) => {
+      const audio = new Audio(`assets/sounds/${nombre}.mp3`);
+      audio.load();
+      this.audios[nombre] = audio;
+    });
+  }
+
+  reproducirSonido(nombre: string): void {
+    const audio = this.audios[nombre];
+    if (!audio) return;
+    audio.currentTime = 0;
+    audio.play().catch((err) => console.error('Error sonido:', err));
+  }
+
+  async preloadDiccionarios() {
+    const letras = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    for (const letra of letras) {
+      const palabras = await this.cargarPalabrasPorLetra(letra);
+      this.diccionarios[letra] = palabras;
     }
   }
 
   async iniciarJuego() {
-    this.tiempo.set(0);
-    if (this.temporizadorId) clearInterval(this.temporizadorId);
-
-    this.temporizadorId = setInterval(() => {
-      this.tiempo.update((t) => t + 1);
-    }, 1000);
-
     const letraInicial = this.getLetraAleatoria();
-    const palabras = await this.cargarPalabrasPorLetra(letraInicial);
+    const palabras = this.diccionarios[letraInicial] || ['pepe'];
 
-    // Filtrar palabras por longitud según aciertos
     const aciertos = this.aciertos();
     let maxLongitud = 10;
     if (aciertos === 0) maxLongitud = 4;
     else if (aciertos === 1) maxLongitud = 5;
     else if (aciertos === 2) maxLongitud = 6;
 
-    // Aplicar filtro de longitud
     let palabrasFiltradas = palabras.filter((p) => {
       const limpia = this.limpiarPalabra(p);
       return limpia.length >= 3 && limpia.length <= maxLongitud;
     });
 
-    // Si no hay palabras filtradas, usar todas
     if (palabrasFiltradas.length === 0) {
       palabrasFiltradas = palabras;
     }
@@ -83,33 +99,32 @@ export class AhorcadoComponent {
       seleccionada
         .toUpperCase()
         .split('')
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .map((_) => '_')
     );
     this.juegoTerminado.set(false);
     this.mostrarResumen.set(false);
     this.vidas.set(6);
-    this.tiempo.set(0);
     this.letrasUsadas.set([]);
   }
 
   getLetraAleatoria(): string {
-    // const letras = 'abcdefghijklmnopqrstuvwxyz';
-    const letras = 'abcd';
+    const letras = 'abc'; //abcdefghijklmnopqrstuvwxyz';
     return letras[Math.floor(Math.random() * letras.length)];
   }
 
-async cargarPalabrasPorLetra(letra: string): Promise<string[]> {
-  const url = `assets/diccionario/${letra}.txt`;
-  try {
-    const contenido = await firstValueFrom(
-      this.http.get(url, { responseType: 'text' })
-    );
-    const lineas = contenido?.split('\n') ?? [];
-    return lineas.slice(1).filter((p) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+$/.test(p));
-  } catch {
-    return ['angular'];
+  async cargarPalabrasPorLetra(letra: string): Promise<string[]> {
+    const url = `assets/diccionario/${letra}.txt`;
+    try {
+      const contenido = await firstValueFrom(
+        this.http.get(url, { responseType: 'text' })
+      );
+      const lineas = contenido?.split('\n') ?? [];
+      return lineas.slice(1).filter((p) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+$/.test(p));
+    } catch {
+      return ['angular'];
+    }
   }
-}
 
   limpiarPalabra(raw: string): string {
     return raw
@@ -142,7 +157,8 @@ async cargarPalabrasPorLetra(letra: string): Promise<string[]> {
 
       if (!nueva.includes('_')) {
         this.aciertos.update((a) => a + 1);
-        setTimeout(() => this.iniciarJuego(), 1000);
+        this.reproducirSonido('punto');
+        setTimeout(() => this.iniciarJuego(), 400);
       }
     } else {
       this.vidas.update((v) => v - 1);
@@ -153,15 +169,29 @@ async cargarPalabrasPorLetra(letra: string): Promise<string[]> {
   }
 
   finalizarJuego() {
-    if (this.temporizadorId) clearInterval(this.temporizadorId);
+    if (this.temporizadorId) {
+      clearInterval(this.temporizadorId);
+      this.temporizadorId = null;
+    }
+
     this.juegoTerminado.set(true);
     this.mostrarResumen.set(true);
-    this.reproducirSonido('assets/sounds/win.mp3');
+    this.reproducirSonido('win');
   }
 
   reiniciar() {
     this.aciertos.set(0);
+    this.tiempo.set(0);
+    this.iniciarTemporizador();
     this.iniciarJuego();
+  }
+
+  iniciarTemporizador() {
+    if (this.temporizadorId) return;
+
+    this.temporizadorId = setInterval(() => {
+      this.tiempo.update((t) => t + 1);
+    }, 1000);
   }
 
   get imagenActual(): string {
