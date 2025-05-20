@@ -1,0 +1,41 @@
+html, body {
+  height: 100%;
+}
+
+.container {
+  max-width: 700px;
+  padding: 2rem;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card {
+  background: linear-gradient(135deg, #1e1e2f, #2c2c3c);
+  border: none;
+}
+
+button {
+  min-width: 140px;
+  font-size: 1.4rem;
+}
+
+.carta-img {
+  max-height: 200px;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease;
+}
+
+h2, h4 {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.carta-img-revelada {
+  max-height: 220px;
+  border-radius: 1rem;
+  border: 2px solid #ff4444;
+  box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+}

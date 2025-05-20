@@ -1,0 +1,71 @@
+<div class="container text-center">
+  <div class="card p-4 shadow-lg rounded-4 bg-dark text-white">
+    <h2 class="mb-3">Juego: Mayor o Menor</h2>
+
+    <div *ngIf="cargando" class="spinner-border text-light my-3" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+
+    <div *ngIf="!cargando">
+      <div class="row justify-content-center mb-4">
+        <div class="col-6 col-md-5 text-center">
+          <p class="text-muted">Carta actual</p>
+          <img
+            [src]="cartaActual?.image"
+            alt="Carta actual"
+            class="img-fluid carta-img"
+          />
+        </div>
+        <div class="col-6 col-md-5 text-center">
+          <p class="text-muted">Carta siguiente</p>
+          <img
+            *ngIf="siguienteCarta; else cartaTapada"
+            [src]="
+              cartaRevelada
+                ? siguienteCarta.image
+                : 'https://deckofcardsapi.com/static/img/back.png'
+            "
+            alt="Carta siguiente"
+            class="img-fluid carta-img"
+          />
+          <ng-template #cartaTapada>
+            <img
+              src="https://deckofcardsapi.com/static/img/back.png"
+              alt="Carta siguiente"
+              class="img-fluid carta-img"
+            />
+          </ng-template>
+        </div>
+      </div>
+
+      <div *ngIf="!terminado && !cartaRevelada">
+        <button class="btn btn-success me-2" (click)="adivinar('mayor')">
+          Mayor
+        </button>
+        <button class="btn btn-warning me-2" (click)="adivinar('igual')">
+          Igual
+        </button>
+        <button class="btn btn-danger" (click)="adivinar('menor')">
+          Menor
+        </button>
+      </div>
+
+      <div class="mt-3">
+        <h4>{{ mensaje }}</h4>
+        <p>Puntuación: {{ puntaje }}</p>
+      </div>
+
+      <div *ngIf="!terminado && cartaRevelada">
+        <button class="btn btn-light mt-2" (click)="siguienteRonda()">
+          Siguiente ronda
+        </button>
+      </div>
+
+      <div *ngIf="terminado">
+        <button class="btn btn-primary mt-3" (click)="iniciarJuego()">
+          Reiniciar Juego
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

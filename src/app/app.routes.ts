@@ -51,6 +51,13 @@ export const routes: Routes = [
               ),
           },
           {
+            path: 'mayor-menor',
+            loadComponent: () =>
+              import('./components/mayor-menor/mayor-menor.component').then(
+                (m) => m.MayorMenorComponent
+              ),
+          },
+          {
             path: 'ahorcado',
             loadComponent: () =>
               import('./components/ahorcado/ahorcado.component').then(
