@@ -2,6 +2,8 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { PuntajeService } from '../../services/puntaje.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'friki-club-ahorcado',
@@ -30,7 +32,11 @@ export class AhorcadoComponent {
 
   diccionarios: Record<string, string[]> = {};
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private puntajeService: PuntajeService,
+    private userService: UserService
+  ) {
     this.preloadImagenes();
     this.preloadAudios();
     this.iniciarTemporizador();
@@ -177,6 +183,22 @@ export class AhorcadoComponent {
     this.juegoTerminado.set(true);
     this.mostrarResumen.set(true);
     this.reproducirSonido('win');
+    this.guardarPuntajeFinal();
+  }
+
+  async guardarPuntajeFinal() {
+    const usuario = this.userService.getCurrentUser();
+    const puntaje = this.aciertos(); // puede ser otra lógica si querés que el tiempo también influya
+
+    try {
+      if (usuario) {
+        await this.puntajeService.guardarPuntaje(usuario, 'ahorcado', puntaje);
+
+        console.log('Puntaje guardado correctamente');
+      }
+    } catch (error) {
+      console.error('Error al guardar el puntaje:', error);
+    }
   }
 
   reiniciar() {

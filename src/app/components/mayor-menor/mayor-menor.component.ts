@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DeckService } from '../../services/deck.service';
 import { Carta } from '../../models/Deck';
+import { UserService } from '../../services/user.service';
+import { PuntajeService } from '../../services/puntaje.service';
 
 @Component({
   selector: 'friki-club-mayor-menor',
@@ -23,7 +25,11 @@ export class MayorMenorComponent implements OnInit {
 
   private audios: Record<string, HTMLAudioElement> = {};
 
-  constructor(private deckService: DeckService) {
+  constructor(
+    private deckService: DeckService,
+    private userService: UserService,
+    private puntajeService: PuntajeService
+  ) {
     this.preloadAudios();
   }
 
@@ -103,6 +109,11 @@ export class MayorMenorComponent implements OnInit {
       this.mensaje = '¡Incorrecto!';
       this.reproducirSonido('win');
       this.terminado = true;
+
+      const usuario = this.userService.getCurrentUser();
+      if (usuario) {
+        this.puntajeService.guardarPuntaje(usuario, 'mayormenor', this.puntaje);
+      }
     }
   }
 
@@ -118,6 +129,11 @@ export class MayorMenorComponent implements OnInit {
       this.terminado = true;
       this.mensaje = '¡Ganaste! Se terminaron las cartas del mazo 🎉';
       this.reproducirSonido('win');
+
+      const usuario = this.userService.getCurrentUser();
+      if (usuario) {
+        this.puntajeService.guardarPuntaje(usuario, 'mayormenor', this.puntaje);
+      }
     }
   }
 

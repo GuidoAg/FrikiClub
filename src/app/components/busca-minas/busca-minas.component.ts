@@ -1,6 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { signal } from '@angular/core';
+import { PuntajeService } from '../../services/puntaje.service';
+import { UserService } from '../../services/user.service';
 
 interface Celda {
   mina: boolean;
@@ -31,7 +33,10 @@ export class BuscaMinasComponent implements OnDestroy {
 
   private audios: Record<string, HTMLAudioElement> = {};
 
-  constructor() {
+  constructor(
+    private userService: UserService,
+    private puntajeService: PuntajeService
+  ) {
     this.preloadAudios();
     this.iniciarJuego();
   }
@@ -69,7 +74,10 @@ export class BuscaMinasComponent implements OnDestroy {
     this.tiempo.set(0);
 
     if (this.temporizadorId) clearInterval(this.temporizadorId);
-    this.temporizadorId = setInterval(() => this.tiempo.update((t) => t + 1), 1000);
+    this.temporizadorId = setInterval(
+      () => this.tiempo.update((t) => t + 1),
+      1000
+    );
 
     const tablero: Celda[][] = Array.from({ length: this.filas }, () =>
       Array.from({ length: this.columnas }, () => ({
@@ -136,7 +144,7 @@ export class BuscaMinasComponent implements OnDestroy {
       this.verificarVictoria();
     }
 
-    this.tablero.set([...tablero]); 
+    this.tablero.set([...tablero]);
   }
 
   descubrirVecinos(tablero: Celda[][], x: number, y: number): void {
@@ -195,7 +203,16 @@ export class BuscaMinasComponent implements OnDestroy {
 
     if (ganaste) {
       this.reproducirSonido('win');
-      this.mensajeFinal.set('🎉 ¡Ganaste! Todos los campos seguros fueron revelados.');
+      this.mensajeFinal.set(
+        '🎉 ¡Ganaste! Todos los campos seguros fueron revelados.'
+      );
+
+      const usuario = this.userService.getCurrentUser();
+      const tiempoFinal = this.tiempo();
+
+      if (usuario) {
+        this.puntajeService.guardarPuntaje(usuario, 'buscaminas', tiempoFinal);
+      }
     } else {
       this.reproducirSonido('boom-busca-minas');
       this.mensajeFinal.set('💥 ¡Perdiste! Pisaste una mina.');

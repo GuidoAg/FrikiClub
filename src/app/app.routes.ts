@@ -81,6 +81,14 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
       },
+            {
+        path: 'ranking',
+        loadComponent: () =>
+          import('./components/ranking/ranking.component').then(
+            (m) => m.RankingComponent
+          ),
+        canActivate: [authGuard],
+      },
       {
         path: 'encuesta',
         loadComponent: () =>

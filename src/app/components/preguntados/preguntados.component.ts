@@ -7,6 +7,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { CountryService } from '../../services/country.service';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { PuntajeService } from '../../services/puntaje.service';
 
 interface Pais {
   nombre: string;
@@ -36,11 +38,13 @@ export class PreguntadosComponent implements OnInit {
   timerInterval?: ReturnType<typeof setInterval>;
   mensajeFinal = '';
   banderaCargada = false;
-  esperandoRespuesta = false; 
+  esperandoRespuesta = false;
 
   constructor(
     private countryService: CountryService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private userService: UserService,
+    private puntajeService: PuntajeService
   ) {}
 
   ngOnInit(): void {
@@ -84,7 +88,7 @@ export class PreguntadosComponent implements OnInit {
     this.juegoTerminado = false;
     this.respuestaCorrecta = null;
     this.respuestaSeleccionada = null;
-    this.paisesDisponibles = this.shuffle([...this.paises]); 
+    this.paisesDisponibles = this.shuffle([...this.paises]);
     this.siguientePregunta();
   }
 
@@ -94,7 +98,7 @@ export class PreguntadosComponent implements OnInit {
       this.tiempoRestante--;
       if (this.tiempoRestante === 0) {
         clearInterval(this.timerInterval);
-        this.responder(null); 
+        this.responder(null);
       }
       this.cd.markForCheck();
     }, 1000);
@@ -124,7 +128,7 @@ export class PreguntadosComponent implements OnInit {
     }
 
     this.opciones = this.shuffle(Array.from(opcionesSet));
-    this.cd.markForCheck(); 
+    this.cd.markForCheck();
   }
 
   responder(pais: Pais | null) {
@@ -142,6 +146,16 @@ export class PreguntadosComponent implements OnInit {
       if (this.vidas <= 0) {
         this.juegoTerminado = true;
         this.mensajeFinal = `💀 Juego terminado. Puntaje final: ${this.puntaje}`;
+
+        const usuario = this.userService.getCurrentUser();
+        if (usuario) {
+          this.puntajeService.guardarPuntaje(
+            usuario,
+            'preguntados',
+            this.puntaje
+          );
+        }
+
         this.cd.markForCheck();
         return;
       }

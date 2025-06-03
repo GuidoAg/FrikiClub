@@ -1,0 +1,45 @@
+<div class="ranking-wrapper">
+  <div class="text-center mb-4 mt-5">
+    <div class="btn-group">
+      <button
+        *ngFor="let juego of juegos"
+        (click)="cargarRanking(juego)"
+        class="btn"
+        [ngClass]="{
+          'btn-primary': juego === juegoActivo,
+          'btn-outline-primary': juego !== juegoActivo
+        }"
+      >
+        {{ juego | titlecase }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="text-center mt-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div class="table-responsive px-3">
+    <table
+      *ngIf="!cargando"
+      class="table table-dark table-striped table-bordered text-center"
+    >
+      <thead class="thead-light">
+        <tr>
+          <th>#</th>
+          <th>Jugador</th>
+          <th>Puntaje</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of ranking; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.Usuarios?.nombre || 'Desconocido' }}</td>
+          <td>{{ item.puntaje }}</td>
+          <td>{{ item.fecha | date: 'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
