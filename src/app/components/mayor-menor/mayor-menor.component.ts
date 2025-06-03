@@ -21,10 +21,32 @@ export class MayorMenorComponent implements OnInit {
   terminado = false;
   cartaRevelada = false;
 
-  constructor(private deckService: DeckService) {}
+  private audios: Record<string, HTMLAudioElement> = {};
+
+  constructor(private deckService: DeckService) {
+    this.preloadAudios();
+  }
 
   ngOnInit(): void {
     this.iniciarJuego();
+  }
+
+  preloadAudios() {
+    const sonidos = ['punto', 'win'];
+    sonidos.forEach((nombre) => {
+      const audio = new Audio(`assets/sounds/${nombre}.mp3`);
+      audio.load();
+      this.audios[nombre] = audio;
+    });
+  }
+
+  reproducirSonido(nombre: string): void {
+    const audio = this.audios[nombre];
+    if (audio) {
+      audio.currentTime = 0;
+      audio.volume = 0.5;
+      audio.play().catch((err) => console.error('Error sonido:', err));
+    }
   }
 
   iniciarJuego(): void {
@@ -39,7 +61,7 @@ export class MayorMenorComponent implements OnInit {
 
     this.deckService.crearMazo().subscribe((res) => {
       this.deckService.setDeckId(res.deck_id);
-      this.deckService.sacarCarta(6).subscribe((cartaRes) => {
+      this.deckService.sacarCarta(52).subscribe((cartaRes) => {
         this.cartasRestantes = cartaRes.cards;
         this.cartaActual = this.cartasRestantes.shift() || null;
         this.siguienteCarta = this.cartasRestantes.shift() || null;
@@ -76,8 +98,10 @@ export class MayorMenorComponent implements OnInit {
     if (acierto) {
       this.mensaje = tipo === 'igual' ? '¡Correcto! (Iguales)' : '¡Correcto!';
       this.puntaje += tipo === 'igual' ? 2 : 1;
+      this.reproducirSonido('punto');
     } else {
       this.mensaje = '¡Incorrecto!';
+      this.reproducirSonido('win');
       this.terminado = true;
     }
   }
@@ -89,6 +113,12 @@ export class MayorMenorComponent implements OnInit {
     this.siguienteCarta = this.cartasRestantes.shift() || null;
     this.mensaje = '';
     this.cartaRevelada = false;
+
+    if (!this.siguienteCarta) {
+      this.terminado = true;
+      this.mensaje = '¡Ganaste! Se terminaron las cartas del mazo 🎉';
+      this.reproducirSonido('win');
+    }
   }
 
   valorCarta(valor: string): number {

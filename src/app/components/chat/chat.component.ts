@@ -37,10 +37,9 @@ export class ChatComponent {
   chatForm!: FormGroup;
 
   constructor(private chatService: ChatService) {
-this.chatForm = this.fb.group({
-  chat_message: ['', [Validators.required, Validators.maxLength(300)]], 
-});
-
+    this.chatForm = this.fb.group({
+      chat_message: ['', [Validators.required, Validators.maxLength(300)]],
+    });
 
     this.onListChat();
 
@@ -65,7 +64,7 @@ this.chatForm = this.fb.group({
     }
     const now = Date.now();
     this.messageTimestamps = this.messageTimestamps.filter(
-      (timestamp) => now - timestamp < 60000 
+      (timestamp) => now - timestamp < 60000
     );
 
     if (this.messageTimestamps.length >= this.MAX_MESSAGES_PER_MINUTE) {

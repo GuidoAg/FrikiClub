@@ -146,7 +146,7 @@ export class BuscaMinasComponent implements OnDestroy {
         const ny = y + dy;
         if (this.estaEnRango(nx, ny)) {
           const vecino = tablero[nx][ny];
-          if (!vecino.revelada && !vecino.mina) {
+          if (!vecino.revelada && !vecino.mina && !vecino.marcada) {
             vecino.revelada = true;
             if (vecino.valor === 0) this.descubrirVecinos(tablero, nx, ny);
           }

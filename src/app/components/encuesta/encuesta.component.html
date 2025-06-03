@@ -1,0 +1,111 @@
+<div class="encuesta-bg">
+  <div class="container mt-4">
+    <h2 class="mb-4">Encuesta</h2>
+
+    <form [formGroup]="encuestaForm" (ngSubmit)="enviar()">
+      <!-- Nombre -->
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre y Apellido</label>
+        <input
+          id="nombre"
+          type="text"
+          class="form-control"
+          formControlName="nombre"
+          [ngClass]="{
+            'is-invalid': enviado && f['nombre'].invalid,
+            'is-valid': f['nombre'].valid
+          }"
+        />
+        <div class="invalid-feedback">El nombre es obligatorio.</div>
+      </div>
+
+      <!-- Edad -->
+      <div class="mb-3">
+        <label for="edad" class="form-label">Edad</label>
+        <input
+          id="edad"
+          type="number"
+          class="form-control"
+          formControlName="edad"
+          [ngClass]="{
+            'is-invalid': enviado && f['edad'].invalid,
+            'is-valid': f['edad'].valid
+          }"
+        />
+        <div class="invalid-feedback">Debes tener entre 18 y 99 años.</div>
+      </div>
+
+      <!-- Pregunta 1 -->
+      <div class="mb-3">
+        <label for="pregunta1" class="form-label"
+          >Opinion y recomendacion para la pagina</label
+        >
+        <textarea
+          id="pregunta1"
+          rows="3"
+          class="form-control"
+          formControlName="pregunta1"
+          [ngClass]="{
+            'is-invalid': enviado && f['pregunta1'].invalid,
+            'is-valid': f['pregunta1'].valid
+          }"
+        ></textarea>
+        <div class="invalid-feedback">Esta pregunta es obligatoria.</div>
+      </div>
+
+      <!-- Pregunta 2: Checkboxes -->
+      <div class="mb-3">
+        <label class="form-label d-block" for="pregunta2"
+          >Que juegos recomendarias</label
+        >
+        <div *ngFor="let opcion of opcionesCheckbox">
+          <input
+            type="checkbox"
+            [id]="opcion"
+            [value]="opcion"
+            (change)="onCheckboxChange($event)"
+            [checked]="f['pregunta2'].value.includes(opcion)"
+          />
+          <label class="ms-1" [for]="opcion">{{ opcion }}</label>
+        </div>
+        <div
+          class="text-danger mt-1"
+          *ngIf="enviado && f['pregunta2'].errors?.['required']"
+        >
+          Seleccioná al menos una opción.
+        </div>
+      </div>
+
+      <!-- Pregunta 3: Radio -->
+      <div class="mb-3">
+        <label class="form-label d-block" for="pregunta3"
+          >¿Vas a volver?</label
+        >
+        <div *ngFor="let opcion of opcionesRadio">
+          <input
+            type="radio"
+            [id]="'radio_' + opcion"
+            [value]="opcion"
+            formControlName="pregunta3"
+            [ngClass]="{ 'is-invalid': enviado && f['pregunta3'].invalid }"
+          />
+          <label class="ms-1" [for]="'radio_' + opcion">{{ opcion }}</label>
+        </div>
+        <div
+          class="invalid-feedback d-block"
+          *ngIf="enviado && f['pregunta3'].invalid"
+        >
+          Seleccioná una opción.
+        </div>
+      </div>
+
+      <!-- Botón -->
+      <button type="submit" class="btn btn-primary">Enviar encuesta</button>
+    </form>
+
+    <!-- Éxito -->
+    <div class="alert alert-success mt-3" *ngIf="guardadoExitoso">
+      ¡Gracias por completar la encuesta!
+    </div>
+  </div>
+</div>

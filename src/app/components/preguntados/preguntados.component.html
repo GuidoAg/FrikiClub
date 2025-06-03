@@ -1,0 +1,73 @@
+<div class="wrapper bg-white p-4 rounded shadow-lg text-center">
+  <div class="juego" *ngIf="paisCorrecto">
+    <h2>¿De qué país es esta bandera?</h2>
+
+    <div class="bandera-container">
+      <img
+        *ngIf="paisCorrecto?.bandera"
+        [src]="paisCorrecto.bandera"
+        [alt]="'Bandera de ' + paisCorrecto.nombre"
+        (load)="banderaCargadaHandler()"
+        (error)="imagenFallida()"
+        class="bandera"
+      />
+
+      <!-- Mensaje opcional mientras la bandera carga -->
+      <div *ngIf="!banderaCargada && paisCorrecto" class="text-muted mt-2">
+        Cargando bandera...
+      </div>
+
+      <div *ngIf="!banderaCargada && paisCorrecto">
+        <p>Cargando bandera...</p>
+      </div>
+
+      <div class="icono-resultado" *ngIf="respuestaCorrecta">
+        <span *ngIf="respuestaSeleccionada?.nombre === respuestaCorrecta.nombre"
+          >✅</span
+        >
+        <span
+          *ngIf="
+            respuestaSeleccionada &&
+            respuestaSeleccionada?.nombre !== respuestaCorrecta.nombre
+          "
+          >❌</span
+        >
+        <span *ngIf="!respuestaSeleccionada">⏱️</span>
+      </div>
+    </div>
+
+    <div class="temporizador" *ngIf="!juegoTerminado">
+      ⏳ {{ tiempoRestante }}s
+    </div>
+
+    <div class="opciones">
+      <button
+        *ngFor="let pais of opciones"
+        (click)="responder(pais)"
+        class="btn-opcion"
+        [class.correcto]="getClaseOpcion(pais) === 'correcto'"
+        [class.incorrecto]="getClaseOpcion(pais) === 'incorrecto'"
+        [disabled]="!esperandoRespuesta"
+        [attr.aria-label]="'Opción: ' + pais.nombre"
+      >
+        {{ pais.nombre }}
+      </button>
+    </div>
+
+    <div class="info">
+      <span>Puntaje: {{ puntaje }}</span>
+      <span>Vidas: ❤️ x{{ vidas }}</span>
+    </div>
+  </div>
+
+  <!-- ✅ Recuadro de juego finalizado -->
+  <div
+    *ngIf="juegoTerminado"
+    class="mensaje-final mt-4 p-3 bg-danger-subtle rounded shadow-sm"
+  >
+    <h3 class="text-danger">{{ mensajeFinal }}</h3>
+    <button class="btn btn-primary mt-2" (click)="reiniciarJuego()">
+      🔄 Jugar de nuevo
+    </button>
+  </div>
+</div>

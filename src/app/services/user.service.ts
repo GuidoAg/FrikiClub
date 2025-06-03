@@ -10,17 +10,23 @@ export class UserService {
   private userDataSubject = new BehaviorSubject<Usuarios | null>(null);
   userData$ = this.userDataSubject.asObservable();
 
+  private loadPromise: Promise<void> | null = null;
+
+  tempUserData: { name: string; age: number; avatarFile: File } | null = null;
+
   constructor() {
     supabase.auth.getUser().then((authData) => {
       if (authData.data?.user) {
-        this.loadUserData();
+        this.loadUserData(); // ya se protege con loadPromise
       } else {
         this.userDataSubject.next(null);
       }
     });
   }
 
-  tempUserData: { name: string; age: number; avatarFile: File } | null = null;
+  getCurrentUser() {
+    return this.userDataSubject.getValue();
+  }
 
   async registerUser(
     name: string,
@@ -29,10 +35,7 @@ export class UserService {
     password: string,
     avatarFile: File
   ): Promise<{ success: boolean; error?: string }> {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (data.user?.identities?.length === 0) {
       return {
@@ -49,20 +52,14 @@ export class UserService {
     }
 
     this.tempUserData = { name, age, avatarFile };
-
     return { success: true };
   }
 
-  getCurrentUser() {
-    return this.userDataSubject.getValue();
-  }
-
-  private loadPromise: Promise<void> | null = null;
-
   async loadUserData(): Promise<void> {
+    if (this.loadPromise) return this.loadPromise;
+
     this.loadPromise = (async () => {
-      const { data: authData, error: authError } =
-        await supabase.auth.getUser();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
 
       if (authError || !authData.user) {
         this.userDataSubject.next(null);
@@ -86,9 +83,7 @@ export class UserService {
 
             let avatarPath = '';
             if (avatarFile) {
-              const uniqueFilename = `${userId}_${Date.now()}_${
-                avatarFile.name
-              }`;
+              const uniqueFilename = `${userId}_${Date.now()}_${avatarFile.name}`;
               avatarPath = `avatarUsuarios/${uniqueFilename}`;
 
               const { error: uploadError } = await supabase.storage
@@ -119,10 +114,7 @@ export class UserService {
               .single();
 
             if (insertError) {
-              console.error(
-                'Error al insertar datos del usuario:',
-                insertError.message
-              );
+              console.error('Error al insertar datos del usuario:', insertError.message);
               this.userDataSubject.next(null);
               return;
             }
@@ -141,7 +133,11 @@ export class UserService {
       }
     })();
 
-    return this.loadPromise;
+    try {
+      await this.loadPromise;
+    } finally {
+      this.loadPromise = null; // libera la promesa para permitir recargas futuras
+    }
   }
 
   async logout() {

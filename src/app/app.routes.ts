@@ -64,6 +64,13 @@ export const routes: Routes = [
                 (m) => m.AhorcadoComponent
               ),
           },
+          {
+            path: 'preguntados',
+            loadComponent: () =>
+              import('./components/preguntados/preguntados.component').then(
+                (m) => m.PreguntadosComponent
+              ),
+          },
         ],
       },
       {
@@ -71,6 +78,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/chat/chat.component').then(
             (m) => m.ChatComponent
+          ),
+        canActivate: [authGuard],
+      },
+      {
+        path: 'encuesta',
+        loadComponent: () =>
+          import('./components/encuesta/encuesta.component').then(
+            (m) => m.EncuestaComponent
           ),
         canActivate: [authGuard],
       },
