@@ -1,0 +1,43 @@
+<div class="ranking-wrapper">
+
+
+  <div *ngIf="cargando" class="text-center mt-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div class="table-responsive px-3">
+    <table
+      *ngIf="!cargando"
+      class="table table-dark table-striped table-bordered text-center"
+    >
+      <thead class="thead-light">
+        <tr>
+          <th>#</th>
+          <th>Usuario</th>
+          <th>Edad</th>
+          <th>Telefono</th>
+          <th>Opinion</th>
+          <th>Recomendacion</th>
+          <th>Vuelve</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of encuestas; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.edad }}</td>
+          <td>{{ item.telefono }}</td>
+          <td>{{ item.pregunta1 }}</td>
+          <td>
+            <ul>
+              <li *ngFor="let opcion of item.pregunta2">{{ opcion }}</li>
+            </ul>
+          </td>
+          <td>{{ item.pregunta3 }}</td>
+          <td>{{ item.created_at | date: 'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

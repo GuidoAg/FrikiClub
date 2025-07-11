@@ -35,6 +35,23 @@
         <div class="invalid-feedback">Debes tener entre 18 y 99 años.</div>
       </div>
 
+      <!-- Telefono -->
+      <div class="mb-3">
+        <label for="telefono" class="form-label">Telefono</label>
+        <input
+          id="telefono"
+          type="number"
+          class="form-control"
+          formControlName="telefono"
+          maxlength="10"
+          [ngClass]="{
+            'is-invalid': enviado && f['telefono'].invalid,
+            'is-valid': f['telefono'].valid
+          }"
+        />
+        <div class="invalid-feedback">Ingrese un numero menor a 10 digitos</div>
+      </div>
+
       <!-- Pregunta 1 -->
       <div class="mb-3">
         <label for="pregunta1" class="form-label"

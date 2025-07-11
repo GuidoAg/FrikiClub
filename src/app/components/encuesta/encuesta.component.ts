@@ -33,6 +33,12 @@ export class EncuestaComponent implements OnInit {
     this.encuestaForm = this.fb.group({
       nombre: ['', Validators.required],
       edad: ['', [Validators.required, Validators.min(18), Validators.max(99)]],
+telefono: [
+  '',
+  [Validators.required, Validators.pattern(/^\d{1,10}$/)],
+],
+
+
       pregunta1: ['', Validators.required],
       pregunta2: this.fb.array([], Validators.required),
       pregunta3: ['', Validators.required],
@@ -55,6 +61,8 @@ export class EncuestaComponent implements OnInit {
       );
       if (index >= 0) checkboxArray.removeAt(index);
     }
+
+     checkboxArray.updateValueAndValidity(); 
   }
 
   async enviar(): Promise<void> {
@@ -73,6 +81,7 @@ export class EncuestaComponent implements OnInit {
       usuario_id: usuario.id,
       nombre: this.f['nombre'].value,
       edad: this.f['edad'].value,
+      telefono: this.f['telefono'].value,
       pregunta1: this.f['pregunta1'].value,
       pregunta2: this.f['pregunta2'].value,
       pregunta3: this.f['pregunta3'].value,

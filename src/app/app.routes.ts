@@ -105,6 +105,14 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
       },
+      {
+        path: 'resultado-encuesta',
+        loadComponent: () =>
+          import('./components/resultado-encuesta/resultado-encuesta.component').then(
+            (m) => m.ResultadoEncuestaComponent
+          ),
+        canActivate: [authGuard],
+      },
     ],
   },
 ];
