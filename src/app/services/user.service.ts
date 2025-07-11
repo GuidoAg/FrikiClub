@@ -12,7 +12,7 @@ export class UserService {
 
   private loadPromise: Promise<void> | null = null;
 
-  tempUserData: { name: string; age: number; avatarFile: File } | null = null;
+  tempUserData: { name: string; age: number; avatarFile: File; isAdmin: boolean } | null = null;
 
   constructor() {
     supabase.auth.getUser().then((authData) => {
@@ -33,7 +33,8 @@ export class UserService {
     age: number,
     email: string,
     password: string,
-    avatarFile: File
+    avatarFile: File,
+    isAdmin: boolean,
   ): Promise<{ success: boolean; error?: string }> {
     const { data, error } = await supabase.auth.signUp({ email, password });
 
@@ -51,7 +52,7 @@ export class UserService {
       };
     }
 
-    this.tempUserData = { name, age, avatarFile };
+    this.tempUserData = { name, age, avatarFile, isAdmin };
     return { success: true };
   }
 
@@ -79,7 +80,7 @@ export class UserService {
           console.log('Usuario no encontrado en la tabla. Insertando datos...');
 
           if (this.tempUserData) {
-            const { avatarFile, name, age } = this.tempUserData;
+            const { avatarFile, name, age, isAdmin } = this.tempUserData;
 
             let avatarPath = '';
             if (avatarFile) {
@@ -108,6 +109,7 @@ export class UserService {
                   nombre: name || authData.user.email,
                   edad: age || 0,
                   avatarUrl: avatarPath,
+                  admin: isAdmin,
                 },
               ])
               .select()

@@ -110,7 +110,8 @@ export class RegisterComponent {
       this.age,
       this.eMail,
       this.password,
-      this.avatarFile!
+      this.avatarFile!,
+      false
     );
 
     if (!result.success) {

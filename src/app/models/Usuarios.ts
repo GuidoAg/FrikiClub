@@ -5,4 +5,5 @@ export interface Usuarios {
     authId: string;
     created_at: string;
     avatarUrl: string;
+    admin: boolean;
 }

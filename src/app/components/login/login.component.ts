@@ -40,8 +40,13 @@ export class LoginComponent {
     this.router.navigate(['/register']);
   }
 
-  onAutoCompletar() {
+  onAutoCompletarUsuario() {
     this.eMail = 'insua.guido@gmail.com';
+    this.password = '123456';
+  }
+
+    onAutoCompletarAdmin() {
+    this.eMail = 'kiwiears.late870@passmail.net';
     this.password = '123456';
   }
 }

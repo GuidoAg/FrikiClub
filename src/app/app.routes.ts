@@ -3,6 +3,7 @@ import { LoginComponent } from './components/login/login.component';
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
 import { LayoutComponent } from './components/layout/layout.component';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -111,7 +112,7 @@ export const routes: Routes = [
           import('./components/resultado-encuesta/resultado-encuesta.component').then(
             (m) => m.ResultadoEncuestaComponent
           ),
-        canActivate: [authGuard],
+        canActivate: [adminGuard],
       },
     ],
   },
